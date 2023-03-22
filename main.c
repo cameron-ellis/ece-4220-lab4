@@ -37,19 +37,22 @@ void* Thread1(void*);
 
 
 int main(void){
-
+	// Initialize Sempaphore for printing
 	sem_init(&mySem, 0, 1);
 
+	// Create thread0
 	pthread_t thrd0;
 
 	pthread_create(&thrd0, NULL, &Thread0, NULL);
 
+	// Create simple pipe for printing and thread 1 for printing
 	pipe(printPipe);
 
 	pthread_t thrd1;
 
 	pthread_create(&thrd1, NULL, &Thread1, NULL);
 	
+	// Open up named pipe to read GPS data
 	int pfd = open("/tmp/N_pipe1", O_RDONLY);
 
 	
@@ -71,7 +74,7 @@ int main(void){
 	return 0;
 }
 
-
+// Responsible for reading the real time button press timestamp
 void* Thread0(void* ptr) {
 
     // Read from N_Pipe2 and store the values in time_buffer sizeof(long)
@@ -142,7 +145,7 @@ void* Child_Thread(void* ptr){
 	pthread_exit(NULL);
 }
 
-
+// Responsible for printing the interpolation results after reading data from child thread through a simple pipe
 void* Thread1(void* ptr) {
 	long double print[6];
 	while(1){
